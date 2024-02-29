@@ -1,28 +1,47 @@
 version: '3.8'
 services:
-  backend:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "5454:5454"
-    volumes:
-      - ./backend/app:/code/app
-      - ./logs/backend:/code/logs
-    environment:
-      - MODULE_NAME=app.main
-      - VARIABLE_NAME=app
-      - PORT=5454
-
   frontend:
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5454:80" # Если вы хотите, чтобы фронтенд был доступен на том же порту, что и бэкенд
+      - "80:80"
     volumes:
-      - ./logs/frontend:/var/log/nginx
+      - ./frontend:/app
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./logs/backend:/app/logs
+    depends_on:
+      - db
+
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: celery -A app.celery_app worker --loglevel=info
+    volumes:
+      - ./backend:/app
+      - ./logs/celery:/app/logs
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  backend-logs:
-  frontend-logs:
+  postgres_data:
