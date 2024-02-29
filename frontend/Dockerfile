@@ -1,24 +1,11 @@
-# base image
-FROM node:lts as build-stage
-
-# set working directory
+# Build stage
+FROM node:14 AS build-stage
 WORKDIR /app
-
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-
-# install and cache app dependencies
-COPY frontend/package.json /app/package.json
+COPY frontend/ .
 RUN npm install
-RUN npm install -g @vue/cli
-
-# add app
-COPY frontend /app
-
-# build app for production with minification
 RUN npm run build
 
-# production environment
+# Production stage
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
