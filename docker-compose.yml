@@ -16,10 +16,10 @@ services:
 
   frontend:
     build: 
-      context: ./frontend # Убедитесь, что это указывает на вашу директорию frontend
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "5454:80" # Если вы хотите, чтобы фронтенд был доступен на том же порту, что и бэкенд
     volumes:
       - ./logs/frontend:/var/log/nginx
 
