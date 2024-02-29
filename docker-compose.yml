@@ -1,15 +1,23 @@
 version: '3.8'
 services:
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "5454:5454"
     volumes:
       - ./backend/app:/code/app
       - ./logs/backend:/code/logs
+    environment:
+      - MODULE_NAME=app.main
+      - VARIABLE_NAME=app
+      - PORT=5454
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     volumes:
