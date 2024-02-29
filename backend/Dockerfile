@@ -2,14 +2,16 @@
 FROM python:3.9-slim
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /code
 
-# Copy the current directory contents into the container at /app
-COPY ./app /app
+# Copy the current directory contents into the container at /code
+COPY ./app /code/app
+COPY pyproject.toml /code/
 
 # Install any needed packages specified in pyproject.toml
-COPY pyproject.toml ./
-RUN pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev
+RUN pip install poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
 
 # Make port 5454 available to the world outside this container
 EXPOSE 5454
