@@ -16,7 +16,7 @@ services:
 
   frontend:
     build: 
-      context: ./frontend
+      context: ./frontend # Убедитесь, что это указывает на вашу директорию frontend
       dockerfile: Dockerfile
     ports:
       - "80:80"
